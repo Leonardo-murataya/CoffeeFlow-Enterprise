@@ -16,7 +16,11 @@ import { restockCriticalAction } from "./actions";
 export const dynamic = "force-dynamic";
 
 function buildExternalHref(envName: string, pathname: string) {
-    const baseUrl = getRequiredEnv(envName);
+    const baseUrl =
+        process.env[envName] ||
+        (envName === "NEXT_PUBLIC_POS_URL"
+            ? "http://localhost:3002"
+            : "http://localhost:3000");
 
     return new URL(pathname, baseUrl).toString();
 }

@@ -174,9 +174,15 @@ export default async function Home() {
                             </div>
                             <Link
                                 href="/seguimiento-pedido"
-                                className="md:col-span-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50"
+                                className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center text-xs font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50"
                             >
-                                Abrir seguimiento público de tickets
+                                Seguimiento público
+                            </Link>
+                            <Link
+                                href="/marcar-entregado"
+                                className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center text-xs font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50"
+                            >
+                                Entregar pedidos
                             </Link>
                         </div>
                     </div>
