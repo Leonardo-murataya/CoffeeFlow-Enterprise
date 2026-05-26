@@ -25,7 +25,7 @@ type CategoryRow = {
 
 type RecentOrderRow = {
     id: string;
-    status: string;
+    status: "pending" | "in_progress" | "ready" | "served" | "cancelled";
     total_cents: number;
     created_at: string;
     notes: string | null;
