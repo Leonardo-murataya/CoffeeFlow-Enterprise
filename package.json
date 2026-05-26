@@ -8,6 +8,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "turbo dev",
         "build": "turbo build",
+        "build:apps": "cd apps/admin && npm run build && cd ../pos && npm run build && cd ../kds && npm run build",
         "lint": "turbo lint",
         "format": "prettier --write ."
     },

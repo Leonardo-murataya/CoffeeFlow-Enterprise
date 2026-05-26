@@ -29,7 +29,9 @@ export const dynamic = "force-dynamic";
 export default async function EstadoPlatillosPage() {
     const snapshot = await loadAdminSnapshot();
     const categoryMap = buildCategoryMap(snapshot.categories);
-    const activeProducts = snapshot.products.filter((product) => product.is_active);
+    const activeProducts = snapshot.products.filter(
+        (product) => product.is_active,
+    );
     const hiddenProducts = snapshot.products.length - activeProducts.length;
     const lowStockItems = snapshot.inventory.filter(
         (item) => item.current_quantity < item.minimum_quantity,
@@ -45,10 +47,12 @@ export default async function EstadoPlatillosPage() {
             summary={
                 <div className="space-y-2">
                     <p className="text-sm font-semibold text-slate-900">
-                        {snapshot.products.length} platillos · {snapshot.categories.length} categorías
+                        {snapshot.products.length} platillos ·{" "}
+                        {snapshot.categories.length} categorías
                     </p>
                     <p className="text-sm text-slate-600">
-                        {activeProducts.length} activos · {hiddenProducts} ocultos · {lowStockItems.length} insumos críticos
+                        {activeProducts.length} activos · {hiddenProducts}{" "}
+                        ocultos · {lowStockItems.length} insumos críticos
                     </p>
                 </div>
             }
@@ -60,7 +64,10 @@ export default async function EstadoPlatillosPage() {
                     title="Crear y ajustar menú"
                     subtitle="Alta de productos, cambio de precio y activación o cierre del catálogo."
                 >
-                    <form action={createProductAction} className="space-y-4 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                    <form
+                        action={createProductAction}
+                        className="space-y-4 rounded-3xl border border-slate-200 bg-slate-50 p-4"
+                    >
                         <h3 className="text-sm font-semibold text-slate-900">
                             Nuevo platillo
                         </h3>
@@ -102,7 +109,10 @@ export default async function EstadoPlatillosPage() {
                                 className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                             >
                                 {snapshot.categories.map((category) => (
-                                    <option key={category.id} value={category.id}>
+                                    <option
+                                        key={category.id}
+                                        value={category.id}
+                                    >
                                         {category.name}
                                     </option>
                                 ))}
@@ -123,18 +133,31 @@ export default async function EstadoPlatillosPage() {
                                             {product.name}
                                         </p>
                                         <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
-                                            {categoryMap.get(product.category_id ?? "") ?? "Sin categoría"}
+                                            {categoryMap.get(
+                                                product.category_id ?? "",
+                                            ) ?? "Sin categoría"}
                                         </p>
                                         <p className="mt-2 text-sm text-slate-600">
-                                            {product.description ?? "Sin descripción registrada."}
+                                            {product.description ??
+                                                "Sin descripción registrada."}
                                         </p>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
-                                        <ToneChip tone={product.is_active ? "emerald" : "slate"}>
-                                            {product.is_active ? "Activo" : "Oculto"}
+                                        <ToneChip
+                                            tone={
+                                                product.is_active
+                                                    ? "emerald"
+                                                    : "slate"
+                                            }
+                                        >
+                                            {product.is_active
+                                                ? "Activo"
+                                                : "Oculto"}
                                         </ToneChip>
                                         <ToneChip tone="sky">
-                                            {formatMoneyMXN(product.price_cents)}
+                                            {formatMoneyMXN(
+                                                product.price_cents,
+                                            )}
                                         </ToneChip>
                                     </div>
                                 </div>
@@ -144,8 +167,14 @@ export default async function EstadoPlatillosPage() {
                                         action={updateProductPriceAction}
                                         className="space-y-2"
                                     >
-                                        <input type="hidden" name="productId" value={product.id} />
-                                        <FieldLabel htmlFor={`price-${product.id}`}>
+                                        <input
+                                            type="hidden"
+                                            name="productId"
+                                            value={product.id}
+                                        />
+                                        <FieldLabel
+                                            htmlFor={`price-${product.id}`}
+                                        >
                                             Nuevo precio
                                         </FieldLabel>
                                         <input
@@ -154,10 +183,15 @@ export default async function EstadoPlatillosPage() {
                                             type="number"
                                             min="0"
                                             step="0.01"
-                                            defaultValue={(product.price_cents / 100).toFixed(2)}
+                                            defaultValue={(
+                                                product.price_cents / 100
+                                            ).toFixed(2)}
                                             className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                         />
-                                        <AdminButton type="submit" variant="secondary">
+                                        <AdminButton
+                                            type="submit"
+                                            variant="secondary"
+                                        >
                                             Guardar precio
                                         </AdminButton>
                                     </form>
@@ -165,20 +199,33 @@ export default async function EstadoPlatillosPage() {
                                         action={toggleProductActiveAction}
                                         className="space-y-2"
                                     >
-                                        <input type="hidden" name="productId" value={product.id} />
-                                        <FieldLabel htmlFor={`active-${product.id}`}>
+                                        <input
+                                            type="hidden"
+                                            name="productId"
+                                            value={product.id}
+                                        />
+                                        <FieldLabel
+                                            htmlFor={`active-${product.id}`}
+                                        >
                                             Estado
                                         </FieldLabel>
                                         <select
                                             id={`active-${product.id}`}
                                             name="isActive"
-                                            defaultValue={String(product.is_active)}
+                                            defaultValue={String(
+                                                product.is_active,
+                                            )}
                                             className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                         >
                                             <option value="true">Activo</option>
-                                            <option value="false">Oculto</option>
+                                            <option value="false">
+                                                Oculto
+                                            </option>
                                         </select>
-                                        <AdminButton type="submit" variant="secondary">
+                                        <AdminButton
+                                            type="submit"
+                                            variant="secondary"
+                                        >
                                             Guardar estado
                                         </AdminButton>
                                     </form>
@@ -192,7 +239,10 @@ export default async function EstadoPlatillosPage() {
                     title="Categorías y recetas"
                     subtitle="Mantén el menú limpio y las relaciones de insumos al día."
                 >
-                    <form action={createCategoryAction} className="space-y-3 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                    <form
+                        action={createCategoryAction}
+                        className="space-y-3 rounded-3xl border border-slate-200 bg-slate-50 p-4"
+                    >
                         <h3 className="text-sm font-semibold text-slate-900">
                             Nueva categoría
                         </h3>
@@ -219,9 +269,18 @@ export default async function EstadoPlatillosPage() {
                                 className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm"
                             >
                                 <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-                                    <form action={updateCategoryAction} className="flex-1 space-y-2">
-                                        <input type="hidden" name="categoryId" value={category.id} />
-                                        <FieldLabel htmlFor={`category-${category.id}`}>
+                                    <form
+                                        action={updateCategoryAction}
+                                        className="flex-1 space-y-2"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="categoryId"
+                                            value={category.id}
+                                        />
+                                        <FieldLabel
+                                            htmlFor={`category-${category.id}`}
+                                        >
                                             Categoría
                                         </FieldLabel>
                                         <input
@@ -230,13 +289,23 @@ export default async function EstadoPlatillosPage() {
                                             defaultValue={category.name}
                                             className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                         />
-                                        <AdminButton type="submit" variant="secondary">
+                                        <AdminButton
+                                            type="submit"
+                                            variant="secondary"
+                                        >
                                             Guardar nombre
                                         </AdminButton>
                                     </form>
                                     <form action={deleteCategoryAction}>
-                                        <input type="hidden" name="categoryId" value={category.id} />
-                                        <AdminButton type="submit" variant="secondary">
+                                        <input
+                                            type="hidden"
+                                            name="categoryId"
+                                            value={category.id}
+                                        />
+                                        <AdminButton
+                                            type="submit"
+                                            variant="secondary"
+                                        >
                                             Eliminar
                                         </AdminButton>
                                     </form>
@@ -260,11 +329,16 @@ export default async function EstadoPlatillosPage() {
                                 <select
                                     id="recipe-product"
                                     name="productId"
-                                    defaultValue={snapshot.products[0]?.id ?? ""}
+                                    defaultValue={
+                                        snapshot.products[0]?.id ?? ""
+                                    }
                                     className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                 >
                                     {snapshot.products.map((product) => (
-                                        <option key={product.id} value={product.id}>
+                                        <option
+                                            key={product.id}
+                                            value={product.id}
+                                        >
                                             {product.name}
                                         </option>
                                     ))}
@@ -277,7 +351,9 @@ export default async function EstadoPlatillosPage() {
                                 <select
                                     id="recipe-item"
                                     name="inventoryItemId"
-                                    defaultValue={snapshot.inventory[0]?.id ?? ""}
+                                    defaultValue={
+                                        snapshot.inventory[0]?.id ?? ""
+                                    }
                                     className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                 >
                                     {snapshot.inventory.map((item) => (
@@ -332,11 +408,21 @@ export default async function EstadoPlatillosPage() {
                                                 {item.name}
                                             </p>
                                             <p className="text-sm text-slate-500">
-                                                {item.unit} · actual {item.current_quantity} · mínimo {item.minimum_quantity}
+                                                {item.unit} · actual{" "}
+                                                {item.current_quantity} · mínimo{" "}
+                                                {item.minimum_quantity}
                                             </p>
                                         </div>
-                                        <ToneChip tone={shortage > 0 ? "rose" : "emerald"}>
-                                            {shortage > 0 ? `Falta ${shortage.toFixed(1)} ${item.unit}` : "OK"}
+                                        <ToneChip
+                                            tone={
+                                                shortage > 0
+                                                    ? "rose"
+                                                    : "emerald"
+                                            }
+                                        >
+                                            {shortage > 0
+                                                ? `Falta ${shortage.toFixed(1)} ${item.unit}`
+                                                : "OK"}
                                         </ToneChip>
                                     </div>
 
@@ -344,9 +430,15 @@ export default async function EstadoPlatillosPage() {
                                         action={updateInventoryAction}
                                         className="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto]"
                                     >
-                                        <input type="hidden" name="inventoryItemId" value={item.id} />
+                                        <input
+                                            type="hidden"
+                                            name="inventoryItemId"
+                                            value={item.id}
+                                        />
                                         <div>
-                                            <FieldLabel htmlFor={`current-${item.id}`}>
+                                            <FieldLabel
+                                                htmlFor={`current-${item.id}`}
+                                            >
                                                 Existencia actual
                                             </FieldLabel>
                                             <input
@@ -355,12 +447,16 @@ export default async function EstadoPlatillosPage() {
                                                 type="number"
                                                 step="0.1"
                                                 min="0"
-                                                defaultValue={item.current_quantity}
+                                                defaultValue={
+                                                    item.current_quantity
+                                                }
                                                 className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                             />
                                         </div>
                                         <div>
-                                            <FieldLabel htmlFor={`minimum-${item.id}`}>
+                                            <FieldLabel
+                                                htmlFor={`minimum-${item.id}`}
+                                            >
                                                 Mínimo operativo
                                             </FieldLabel>
                                             <input
@@ -369,12 +465,17 @@ export default async function EstadoPlatillosPage() {
                                                 type="number"
                                                 step="0.1"
                                                 min="0"
-                                                defaultValue={item.minimum_quantity}
+                                                defaultValue={
+                                                    item.minimum_quantity
+                                                }
                                                 className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                             />
                                         </div>
                                         <div className="flex items-end">
-                                            <AdminButton type="submit" variant="secondary">
+                                            <AdminButton
+                                                type="submit"
+                                                variant="secondary"
+                                            >
                                                 Guardar
                                             </AdminButton>
                                         </div>
@@ -385,7 +486,9 @@ export default async function EstadoPlatillosPage() {
                     </div>
 
                     <form action={restockCriticalAction} className="mt-5">
-                        <AdminButton type="submit">Reabastecer críticos</AdminButton>
+                        <AdminButton type="submit">
+                            Reabastecer críticos
+                        </AdminButton>
                     </form>
                 </Panel>
 
@@ -404,15 +507,25 @@ export default async function EstadoPlatillosPage() {
                                         {product.name}
                                     </p>
                                     <p className="text-slate-500">
-                                        {categoryMap.get(product.category_id ?? "") ?? "Sin categoría"}
+                                        {categoryMap.get(
+                                            product.category_id ?? "",
+                                        ) ?? "Sin categoría"}
                                     </p>
                                 </div>
                                 <div className="text-right">
                                     <p className="font-semibold text-slate-950">
                                         {formatMoneyMXN(product.price_cents)}
                                     </p>
-                                    <ToneChip tone={product.is_active ? "emerald" : "slate"}>
-                                        {product.is_active ? "Activo" : "Oculto"}
+                                    <ToneChip
+                                        tone={
+                                            product.is_active
+                                                ? "emerald"
+                                                : "slate"
+                                        }
+                                    >
+                                        {product.is_active
+                                            ? "Activo"
+                                            : "Oculto"}
                                     </ToneChip>
                                 </div>
                             </div>

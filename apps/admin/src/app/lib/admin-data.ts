@@ -194,10 +194,7 @@ export function formatMoneyMXN(amountCents: number) {
     }).format(amountCents / 100);
 }
 
-export function isSameLocalDay(
-    isoDate: string,
-    referenceDate = new Date(),
-) {
+export function isSameLocalDay(isoDate: string, referenceDate = new Date()) {
     const date = new Date(isoDate);
 
     return (
@@ -239,11 +236,11 @@ export function buildOrderStatusSummary(
     };
 
     return statuses.map((status) => ({
-            status,
-            label: labels[status],
-            count: todayOrders.filter((order) => order.status === status).length,
-            tone: tones[status],
-        }));
+        status,
+        label: labels[status],
+        count: todayOrders.filter((order) => order.status === status).length,
+        tone: tones[status],
+    }));
 }
 
 export function buildTopProductsToday(
