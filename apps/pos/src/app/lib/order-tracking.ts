@@ -127,8 +127,7 @@ export async function loadOrderTrackingSnapshot(query = "") {
             id: order.id,
             status: normalizeTicketStatus(order.status),
             createdAt: order.created_at,
-            statusLabel:
-                statusLabelMap[normalizeTicketStatus(order.status)],
+            statusLabel: statusLabelMap[normalizeTicketStatus(order.status)],
             totalText: money.format(order.total_cents / 100),
             notes: order.notes,
             items: (orderItemsByOrder.get(order.id) ?? []).map((item) => ({
