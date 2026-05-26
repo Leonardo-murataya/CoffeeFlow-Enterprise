@@ -27,12 +27,15 @@ Variables de entorno (necesarias)
 - `NEXT_PUBLIC_SUPABASE_URL` — URL del proyecto Supabase (pública)
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — clave anónima pública de Supabase
 - `SUPABASE_SERVICE_ROLE_KEY` — clave secreta para acciones de servidor (no exponer públicamente)
+- `NEXT_PUBLIC_POS_URL` — URL pública del proyecto POS desplegado en Vercel
+- `NEXT_PUBLIC_KDS_URL` — URL pública del proyecto KDS desplegado en Vercel
 
 Notas importantes
 
 - Este monorepo usa paquetes locales (`packages/*`). Cada app incluye `next.config.ts` con `transpilePackages` para compilar los paquetes locales en el build de Vercel.
 - No subas `SUPABASE_SERVICE_ROLE_KEY` a ningún archivo público. Añádela en Vercel como `Environment Variable` tipo `Secret` en `Production`.
 - Si quieres desplegar las tres apps como proyectos independientes en Vercel, repite el proceso 3 veces cambiando solo el `Root Directory`.
+- Una vez tengas las URLs finales de POS y KDS, añade `NEXT_PUBLIC_POS_URL` y `NEXT_PUBLIC_KDS_URL` en el proyecto `admin` para que los atajos no apunten a `localhost`.
 
 Comprobación posterior al despliegue
 

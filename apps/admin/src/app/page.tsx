@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getRequiredEnv } from "@coffeeflow/database";
 import { ThemeToggle } from "@coffeeflow/ui";
 import OrdersRealtime from "./OrdersRealtime";
 import { AdminShell, Panel, StatCard, ToneChip } from "./components/admin-ui";
@@ -13,6 +14,12 @@ import {
 import { restockCriticalAction } from "./actions";
 
 export const dynamic = "force-dynamic";
+
+function buildExternalHref(envName: string, pathname: string) {
+    const baseUrl = getRequiredEnv(envName);
+
+    return new URL(pathname, baseUrl).toString();
+}
 
 function translateOrderStatus(status: string) {
     switch (status) {
@@ -87,6 +94,15 @@ export default async function Home() {
             : Math.round(todayRevenue / todayOrders.length);
 
     const lastOrder = snapshot.orders[0];
+    const publicFollowUpHref = buildExternalHref(
+        "NEXT_PUBLIC_POS_URL",
+        "/seguimiento-pedido",
+    );
+    const publicMarkDeliveredHref = buildExternalHref(
+        "NEXT_PUBLIC_POS_URL",
+        "/marcar-entregado",
+    );
+    const publicKdsHref = buildExternalHref("NEXT_PUBLIC_KDS_URL", "/");
 
     return (
         <AdminShell
@@ -214,7 +230,7 @@ export default async function Home() {
                             </p>
                         </Link>
                         <Link
-                            href="http://localhost:3002/seguimiento-pedido"
+                            href={publicFollowUpHref}
                             className="rounded-3xl border border-slate-200 bg-slate-50 p-4 hover:-translate-y-0.5 hover:bg-slate-100"
                         >
                             <p className="text-sm font-semibold text-slate-950">
@@ -226,7 +242,7 @@ export default async function Home() {
                             </p>
                         </Link>
                         <Link
-                            href="http://localhost:3002/marcar-entregado"
+                            href={publicMarkDeliveredHref}
                             className="rounded-3xl border border-slate-200 bg-slate-50 p-4 hover:-translate-y-0.5 hover:bg-slate-100"
                         >
                             <p className="text-sm font-semibold text-slate-950">
@@ -237,7 +253,7 @@ export default async function Home() {
                             </p>
                         </Link>
                         <Link
-                            href="http://localhost:3001/"
+                            href={publicKdsHref}
                             className="rounded-3xl border border-slate-200 bg-slate-50 p-4 hover:-translate-y-0.5 hover:bg-slate-100"
                         >
                             <p className="text-sm font-semibold text-slate-950">
