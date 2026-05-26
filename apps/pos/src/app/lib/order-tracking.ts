@@ -60,6 +60,16 @@ const statusLabelMap: Record<OrderTrackingTicket["status"], string> = {
     served: "Entregado",
 };
 
+function normalizeTicketStatus(
+    status: OrderRow["status"],
+): OrderTrackingTicket["status"] {
+    if (status === "cancelled") {
+        return "pending";
+    }
+
+    return status;
+}
+
 export async function loadOrderTrackingSnapshot(query = "") {
     const client = createSupabaseServiceClient();
 
@@ -115,12 +125,10 @@ export async function loadOrderTrackingSnapshot(query = "") {
         .filter((order) => order.status !== "cancelled")
         .map((order) => ({
             id: order.id,
-            status: order.status === "served" ? "served" : order.status,
+            status: normalizeTicketStatus(order.status),
             createdAt: order.created_at,
             statusLabel:
-                statusLabelMap[
-                    order.status === "cancelled" ? "pending" : order.status
-                ],
+                statusLabelMap[normalizeTicketStatus(order.status)],
             totalText: money.format(order.total_cents / 100),
             notes: order.notes,
             items: (orderItemsByOrder.get(order.id) ?? []).map((item) => ({
