@@ -11,6 +11,7 @@ import {
     createCategoryAction,
     createProductAction,
     deleteCategoryAction,
+    deleteProductAction,
     restockCriticalAction,
     syncRecipeAction,
     toggleProductActiveAction,
@@ -25,6 +26,7 @@ import {
 } from "../lib/admin-data";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function EstadoPlatillosPage() {
     const snapshot = await loadAdminSnapshot();
@@ -121,7 +123,7 @@ export default async function EstadoPlatillosPage() {
                         <AdminButton type="submit">Crear producto</AdminButton>
                     </form>
 
-                    <div className="mt-5 space-y-4">
+                    <div className="mt-5 max-h-[600px] overflow-y-auto pr-2 space-y-4">
                         {snapshot.products.map((product) => (
                             <article
                                 key={product.id}
@@ -162,7 +164,7 @@ export default async function EstadoPlatillosPage() {
                                     </div>
                                 </div>
 
-                                <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_1fr_auto]">
+                                <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_1fr_1fr]">
                                     <form
                                         action={updateProductPriceAction}
                                         className="space-y-2"
@@ -191,6 +193,7 @@ export default async function EstadoPlatillosPage() {
                                         <AdminButton
                                             type="submit"
                                             variant="secondary"
+                                            className="w-full"
                                         >
                                             Guardar precio
                                         </AdminButton>
@@ -225,8 +228,27 @@ export default async function EstadoPlatillosPage() {
                                         <AdminButton
                                             type="submit"
                                             variant="secondary"
+                                            className="w-full"
                                         >
                                             Guardar estado
+                                        </AdminButton>
+                                    </form>
+                                    <form
+                                        action={deleteProductAction}
+                                        className="space-y-2 flex flex-col justify-end"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="productId"
+                                            value={product.id}
+                                        />
+                                        <FieldLabel>Acción</FieldLabel>
+                                        <AdminButton
+                                            type="submit"
+                                            variant="secondary"
+                                            className="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200"
+                                        >
+                                            Eliminar platillo
                                         </AdminButton>
                                     </form>
                                 </div>
@@ -262,7 +284,7 @@ export default async function EstadoPlatillosPage() {
                         </AdminButton>
                     </form>
 
-                    <div className="mt-5 space-y-3">
+                    <div className="mt-5 max-h-[300px] overflow-y-auto pr-2 space-y-3">
                         {snapshot.categories.map((category) => (
                             <article
                                 key={category.id}
@@ -390,7 +412,7 @@ export default async function EstadoPlatillosPage() {
                     title="Inventario"
                     subtitle="Ajusta existencias y mínimos por insumo."
                 >
-                    <div className="space-y-3">
+                    <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
                         {snapshot.inventory.map((item) => {
                             const shortage = Math.max(
                                 0,
@@ -496,7 +518,7 @@ export default async function EstadoPlatillosPage() {
                     title="Estado del menú"
                     subtitle="Checklist rápido para detectar catálogo activo, oculto y bien categorizado."
                 >
-                    <div className="space-y-3 text-sm text-slate-700">
+                    <div className="space-y-3 text-sm text-slate-700 max-h-[500px] overflow-y-auto pr-2">
                         {snapshot.products.map((product) => (
                             <div
                                 key={product.id}

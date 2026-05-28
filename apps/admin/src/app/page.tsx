@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { getRequiredEnv } from "@coffeeflow/database";
 import { ThemeToggle } from "@coffeeflow/ui";
 import OrdersRealtime from "./OrdersRealtime";
@@ -14,13 +15,43 @@ import {
 import { restockCriticalAction } from "./actions";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-function buildExternalHref(envName: string, pathname: string) {
-    const baseUrl =
-        process.env[envName] ||
-        (envName === "NEXT_PUBLIC_POS_URL"
-            ? "http://localhost:3002"
-            : "http://localhost:3000");
+function buildExternalHref(envName: string, pathname: string, host: string) {
+    let baseUrl = "";
+
+    // 1. Check environment variables first
+    if (envName === "NEXT_PUBLIC_POS_URL" && process.env.NEXT_PUBLIC_POS_URL) {
+        return new URL(pathname, process.env.NEXT_PUBLIC_POS_URL).toString();
+    }
+    if (envName === "NEXT_PUBLIC_KDS_URL" && process.env.NEXT_PUBLIC_KDS_URL) {
+        return new URL(pathname, process.env.NEXT_PUBLIC_KDS_URL).toString();
+    }
+
+    // 2. Check if we are running in localhost/development
+    const isLocal = host.includes("localhost") || host.includes("127.0.0.1") || !host;
+    if (isLocal) {
+        if (envName === "NEXT_PUBLIC_POS_URL") {
+            baseUrl = "http://localhost:3002";
+        } else {
+            baseUrl = host.includes(":3000") ? "http://localhost:3001" : "http://localhost:3000";
+        }
+    } else {
+        // 3. We are in production! Dynamically swap "admin" with "pos" or "kds"
+        const protocol = "https://";
+        const targetApp = envName === "NEXT_PUBLIC_POS_URL" ? "pos" : "kds";
+        
+        let targetHost = host;
+        if (host.includes("admin")) {
+            targetHost = host.replace("admin", targetApp);
+        } else if (host.includes("Admin")) {
+            targetHost = host.replace("Admin", targetApp);
+        } else {
+            targetHost = `${targetApp}.${host}`;
+        }
+        
+        baseUrl = `${protocol}${targetHost}`;
+    }
 
     return new URL(pathname, baseUrl).toString();
 }
@@ -97,16 +128,19 @@ export default async function Home() {
             ? 0
             : Math.round(todayRevenue / todayOrders.length);
 
+    const hostHeader = (await headers()).get("host") || "";
     const lastOrder = snapshot.orders[0];
     const publicFollowUpHref = buildExternalHref(
         "NEXT_PUBLIC_POS_URL",
         "/seguimiento-pedido",
+        hostHeader,
     );
     const publicMarkDeliveredHref = buildExternalHref(
         "NEXT_PUBLIC_POS_URL",
         "/marcar-entregado",
+        hostHeader,
     );
-    const publicKdsHref = buildExternalHref("NEXT_PUBLIC_KDS_URL", "/");
+    const publicKdsHref = buildExternalHref("NEXT_PUBLIC_KDS_URL", "/", hostHeader);
 
     return (
         <AdminShell

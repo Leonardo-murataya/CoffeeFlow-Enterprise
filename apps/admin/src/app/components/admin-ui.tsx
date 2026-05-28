@@ -238,10 +238,12 @@ export function AdminButton({
     children,
     variant = "primary",
     type = "button",
+    className = "",
 }: {
     children: ReactNode;
     variant?: "primary" | "secondary";
     type?: "button" | "submit";
+    className?: string;
 }) {
     return (
         <button
@@ -250,7 +252,7 @@ export function AdminButton({
                 variant === "primary"
                     ? "bg-slate-950 text-white hover:bg-slate-800"
                     : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-            }`}
+            } ${className}`}
         >
             {children}
         </button>

@@ -237,3 +237,38 @@ export async function restockCriticalAction() {
     revalidatePath("/");
     revalidatePath("/estado-platillos");
 }
+
+export async function deleteProductAction(formData: FormData) {
+    const productId = String(formData.get("productId") ?? "").trim();
+
+    if (!productId) {
+        return;
+    }
+
+    const client = createSupabaseServiceClient();
+
+    // First delete any recipe associated with this product
+    await client.from("recipes").delete().eq("product_id", productId);
+
+    // Try to delete the product
+    const { error: deleteError } = await client
+        .from("products")
+        .delete()
+        .eq("id", productId);
+
+    if (deleteError) {
+        // If it cannot be deleted because of ordered items (on delete restrict),
+        // we soft-delete it by setting is_active to false.
+        const { error: updateError } = await client
+            .from("products")
+            .update({ is_active: false })
+            .eq("id", productId);
+
+        if (updateError) {
+            throw updateError;
+        }
+    }
+
+    revalidatePath("/");
+    revalidatePath("/estado-platillos");
+}

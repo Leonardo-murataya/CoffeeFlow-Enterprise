@@ -4,6 +4,7 @@ import { loadOrderTrackingSnapshot } from "../lib/order-tracking";
 import OrdersRealtime from "../OrdersRealtime";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 function formatTime(value: string) {
     return new Date(value).toLocaleTimeString("es-MX", {

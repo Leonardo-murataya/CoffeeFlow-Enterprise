@@ -7,6 +7,7 @@ import OrdersRealtime from "./OrdersRealtime";
 import { updateOrderStatusAction } from "./actions";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type OrderRow = {
     id: string;
